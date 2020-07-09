@@ -1,6 +1,11 @@
 import pygame
+import numpy as np
+import string
 
 class Grid:
+
+    pygame.font.init()
+    axis_title = pygame.font.Font("fonts/Vollkorn-Bold.ttf", 14)
 
     def __init__(self, blockSize, xStart, yStart, color, win, **kwargs):
         self.sizeY = kwargs.get('size', None)[0]
@@ -11,6 +16,11 @@ class Grid:
         self.color = color
         self.win = win
         self.kwargs = kwargs
+        self.grid = []
+        self.x_labels = string.ascii_uppercase[:10]
+        self.y_labels = [i for i in range(1, 11)]
+
+        print(len(self.y_labels))
 
     def make_grid(self):
         map = []
@@ -30,15 +40,32 @@ class Grid:
 
     def draw(self):
         g_ = []
-        grid = self.make_grid()
-        for row in range(len(grid)):
-            for col in range(len(grid[row])):
+        self.grid = self.make_grid()
+        for row in range(len(self.grid)):
+            for col in range(len(self.grid[row])):
                 d_ = None
-                d_ = pygame.draw.rect(self.win, self.color, grid[row][col], 1)
+                rect_ = self.grid[row][col]
+                d_ = pygame.draw.rect(self.win, self.color, self.grid[row][col], 1)
                 g_.append([d_, [row, col], self.kwargs.get('alias', None)])
 
         return g_
     
+    def draw_grid_labels(self, grid):
+        np_grid = np.array(grid)
+        for index, element in enumerate(np_grid[0:10, :]):
+            x_text = self.axis_title.render(self.x_labels[index], True, (0, 0, 0))
+            self.win.blit(x_text, (element[0][0] + 12, element[0][1] - 20))
+            
+        if grid[0][2] == 'Player':
+            for index, element in enumerate(np_grid[:, :10][:10]):
+                y_text = self.axis_title.render(str(self.y_labels[index]), True, (0, 0, 0))
+                self.win.blit(y_text, (40, element[0][0] + 45))
+        else:
+            print('np_grid[:, :10]', np_grid[:, :10][-10:])
+            for index, element in enumerate(np_grid[:, :10][-10:]):
+                y_text = self.axis_title.render(str(self.y_labels[index]), True, (0, 0, 0))
+                self.win.blit(y_text, (810, element[0][0] - 335))
+        
     def draw_ships_list(self):
         rect = (self.xStart, self.yStart, self.blockSize[0], self.blockSize[1])
         pygame.draw.rect(self.win, self.color, rect, 1) 

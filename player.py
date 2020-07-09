@@ -20,14 +20,18 @@ class Player:
         self.win = win
         self.color = (0, 0, 0)
         self.g_ = None
+        self.grid = Grid.Grid(self.blockSize, self.xStart, self.yStart, self.color, self.win, size=self.size, alias=self.alias) 
     
     def draw_grid(self):
         grid = Grid.Grid(self.blockSize, self.xStart, self.yStart, self.color, self.win, size=self.size, alias=self.alias)
         self.g_ = grid.draw()
 
+    def draw_grid_labels(self):
+        self.grid.draw_grid_labels(self.g_)
+
     def draw_title_message(self, txt):
         text = self.title_font.render(txt, True, constants.PLAYER_TITLE_COLOR)
-        self.win.blit(text, (self.xStart + 20, self.yStart - 60))
+        self.win.blit(text, (self.xStart + 20, self.yStart - 80))
 
 
     def collide_check(self, pos):

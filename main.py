@@ -10,14 +10,14 @@ def main():
     clock = pygame.time.Clock()
     running = True
     pygame.init()
-    WIDTH, HEIGHT = 820, 710
+    WIDTH, HEIGHT = 860, 710
     win = pygame.display.set_mode((WIDTH, HEIGHT))
 
     # Basics classes intantiations - TODO: Work with multiple screens and change this up
-    player = Player.Player('Player', 340, [34, 34], 40, 100, win, size=[10, 10])
-    enemy = Player.Player('Enemy', 340, [34, 34], 420, 100, win, size=[10, 10])
-    ships_grid = Grid.Grid([470, 190], 40, 490, constants.BLACK, win, size=[0, 0])
-    logs_grid = Grid.Grid([250, 190], 530, 490, constants.BLACK, win, size=[0,0])
+    player = Player.Player('Player', 340, [34, 34], 60, 100, win, size=[10, 10])
+    enemy = Player.Player('Enemy', 340, [34, 34], 440, 100, win, size=[10, 10])
+    ships_grid = Grid.Grid([470, 190], 60, 490, constants.BLACK, win, size=[0, 0])
+    logs_grid = Grid.Grid([250, 190], 550, 490, constants.BLACK, win, size=[0, 0])
 
     log = Log.Log(win, 520, 500)
 
@@ -30,6 +30,9 @@ def main():
         player.draw_title_message("My Ships")
         enemy.draw_grid()
         enemy.draw_title_message("Enemy Ships")
+
+        player.draw_grid_labels()
+        enemy.draw_grid_labels()
 
         ships_grid.draw_ships_list()
         logs_grid.draw_ships_list()
