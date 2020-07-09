@@ -40,5 +40,5 @@ class Log:
     def draw_log(self):
         print('log list', len(self.log_list))
         for log in reversed(self.log_list):
-            self.win.blit(log, (self.xStart + 20, self.yStart + (self.log_list.index(log) * 20)))
+            self.win.blit(log, (self.xStart + 20, self.yStart + (self.log_list.index(log) * 20))) 
             

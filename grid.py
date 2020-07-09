@@ -41,4 +41,4 @@ class Grid:
     
     def draw_ships_list(self):
         rect = (self.xStart, self.yStart, self.blockSize[0], self.blockSize[1])
-        pygame.draw.rect(self.win, self.color, rect, 1)
+        pygame.draw.rect(self.win, self.color, rect, 1) 

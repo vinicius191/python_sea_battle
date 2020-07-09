@@ -7,4 +7,4 @@ __pycache__/
 ## Virtual env ##
 bin/
 include/
-lib/
+lib/ 

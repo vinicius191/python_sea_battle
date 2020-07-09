@@ -49,4 +49,4 @@ class Player:
                 log = Log.Log(self.win, 550, 510)
                 log.show_message(self.win, attacker='Player', defender='Enemy', type='HIT', position=position)
 
-                break
+                break 
