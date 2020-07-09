@@ -1,0 +1,10 @@
+## Vs code ##
+.vscode/
+
+## Python ##
+__pycache__/
+
+## Virtual env ##
+bin/
+include/
+lib/
