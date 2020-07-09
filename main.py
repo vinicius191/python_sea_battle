@@ -46,6 +46,6 @@ def main():
                 player.collide_check(pos)
                 enemy.collide_check(pos)
 
-        pygame.display.update() 
+        pygame.display.update()
 
 main()
