@@ -7,10 +7,10 @@ class Log:
     log_font = pygame.font.Font("fonts/Vollkorn-Bold.ttf", 18)
     log_list = []
 
-    def __init__(self, win, xStart, yStart, *args, **kwargs):
+    def __init__(self, win, x, y, *args, **kwargs):
         self.win = win
-        self.xStart = xStart
-        self.yStart = yStart
+        self.x = x
+        self.y = y
         self.attacker = kwargs.get('attacker', None)
         self.defender = kwargs.get('defender', None)
         self.position = kwargs.get('position', None)
@@ -38,7 +38,6 @@ class Log:
         self.log_list.append(log)
     
     def draw_log(self):
-        print('log list', len(self.log_list))
         for log in reversed(self.log_list):
-            self.win.blit(log, (self.xStart + 40, self.yStart + (self.log_list.index(log) * 20))) 
+            self.win.blit(log, (self.x + 40, self.y + (self.log_list.index(log) * 20))) 
             
