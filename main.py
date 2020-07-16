@@ -5,6 +5,7 @@ import constants
 import log as Log
 import ship as Ship
 import random
+import copy
 
 def main():
     # List of Ships - TODO: Move it to somewhere else later
@@ -41,6 +42,35 @@ def main():
         my_ships.append(ship)
         ship.draw_ships_list()
     
+    static_ship_list = []
+    """for index, item in enumerate(ships_list):
+        ship = Ship.Ship(item['pg_image'], item['name'], item['x'], item['y'], item['size'], win)
+        my_ships.append(ship)
+        # ship.draw_ships_list()"""
+
+    def check_update_static_ship_list(ship):
+        exists = False
+        obj_ = {'x': ship.init_x, 'y': ship.init_y, 'name': ship.name, 'image': ship.image}
+        for i, s in enumerate(static_ship_list):
+            if s['name'] == ship.name:
+                static_ship_list[i] = obj_
+                exists = True
+                break
+
+        if not exists:
+            static_ship_list.append(obj_)
+
+        return exists
+    
+    def update_alpha(num, image, x, y):
+        image = image.convert_alpha()
+        temp = pygame.Surface((image.get_width(), image.get_height())).convert()
+        temp.blit(win, (-x, -y))
+        temp.blit(image, (0, 0))
+        temp.set_alpha(num)
+        print('here ', image)
+        win.blit(temp, (x, y))
+
     def redraw():
         win.fill(WHITE)
 
@@ -55,6 +85,9 @@ def main():
 
         for ship in my_ships:
             ship.draw_image(ship.x, ship.y)
+
+        for static_ship in static_ship_list:
+            update_alpha(100, static_ship['image'], static_ship['x'], static_ship['y'])
 
         pygame.display.flip()
 
@@ -89,28 +122,29 @@ def main():
                             break
             
             if event.type == pygame.MOUSEBUTTONUP:
-                # Check if player can drop ship at pos - If no return ship to initial position
-                
+                # Check if player can drop ship at pos - If no return ship to initial position                
                 for ship in my_ships:
-
+                    
                     if ship.drag:
                         left_check_rect = player.collide_check((ship.x + ship.rect[2] / 2, ship.y))
                         if len(left_check_rect) > 0:
-                            print('left_check_rect', left_check_rect)
-                            new_ship_x_y = player.check_ship_in_bounds(left_check_rect, ship)
-                            ship.x, ship.y = new_ship_x_y
+                            ship.x, ship.y = player.check_ship_in_bounds(left_check_rect, ship)
+                            # print('ship x drag', ship.x)
+                            ship.in_grid = True
+                            check_update_static_ship_list(ship) # TODO: Fix this logic to draw fadded selected ships
                         else:
-                            right_check_rect = player.collide_check((ship.x + 20, ship.y))
-                            
-                            if len(right_check_rect) > 0:
-                                pass
-                                #print('right_check_rect')
-                        #if ship not in ships_in_grid:
-                        #    ships_in_grid.append(ship)
-
+                            ship.x, ship.y = ship.init_x, ship.init_y
+                            # print('ship x initial', ship.x)
+                            ship.in_grid = False
+                            for i, s in enumerate(static_ship_list):
+                                if ship.name == s['name']:
+                                    static_ship_list.remove(s)
+                            # break
+                        
                         ship.drag = False
-        
+
         for ship in my_ships:
+
             if ship.drag:
 
                 pos = pygame.mouse.get_pos()
@@ -119,7 +153,9 @@ def main():
 
                 ship.draw_image(ship.x, ship.y)
                 break
-        
+            
+            ship.drag = False
+
         redraw()
         clock.tick(60)
 

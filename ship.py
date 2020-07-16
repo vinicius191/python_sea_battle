@@ -14,6 +14,11 @@ class Ship(pygame.sprite.Sprite):
         self.size = size
         self.win = win
         self.drag = False
+        self.in_grid = False
+        self.out_grid = False
+
+    def __eq__(self, other):
+        return self.name == other.name
 
     def draw_ships_list(self):
         self.rect = self.win.blit(self.image, (self.x, self.y))
@@ -24,6 +29,9 @@ class Ship(pygame.sprite.Sprite):
 
     def draw_image(self, x, y):
         self.rect = self.win.blit(self.image, (x + 1, y + 2))
+
+    def draw_image_(self, image, x, y):
+        self.rect = self.win.blit(image, (x, y))
 
     def check_y_boundary(self, grid_y_pos, grid_top):
         print('checking ' + str(grid_y_pos) + ' at top ' + str(grid_top) + ' w/ boat size ' + str(self.size))
@@ -65,3 +73,23 @@ class Ship(pygame.sprite.Sprite):
 
         print('got here ?')
         return grid_top
+
+    def update_alpha(self, num, x, y):
+        image = self.image.convert_alpha()
+        temp = pygame.Surface((image.get_width(), image.get_height())).convert()
+        temp.blit(self.win, (-x, -y))
+        temp.blit(image, (0, 0))
+        temp.set_alpha(num)
+        self.rect = self.win.blit(temp, (x, y))
+    
+    def blit_alpha(target, source, location, opacity):
+        x = location[0]
+        y = location[1]
+        temp = pygame.Surface((source.get_width(), source.get_height())).convert()
+        temp.blit(target, (-x, -y))
+        temp.blit(source, (0, 0))
+        temp.set_alpha(opacity)        
+        target.blit(temp, location)
+    
+    def draw_alpha_image(self, image, x, y):
+        self.rect = self.win.blit(image, (x, y))
