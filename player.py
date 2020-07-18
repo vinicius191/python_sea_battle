@@ -68,9 +68,14 @@ class Player:
         
         return []
 
-    def collide_check_rect(self, rect1, rect2):
-        if rect2.colliderect(rect1):
-            print('Collide -------')
+    def collide_check_rect(self, rect, list_recs):
+        collided = False
+        for item in list_recs:
+            if item.rect != rect:
+                if item.rect.colliderect(rect):
+                    collided = True
+                    break
+        return collided
 
     def check_ship_in_bounds(self, rect, ship):
         x, y = ship.x, ship.y

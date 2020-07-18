@@ -41,12 +41,8 @@ def main():
         ship = Ship.Ship(item['pg_image'], item['name'], item['x'], item['y'], item['size'], win)
         my_ships.append(ship)
         ship.draw_ships_list()
-    
+
     static_ship_list = []
-    """for index, item in enumerate(ships_list):
-        ship = Ship.Ship(item['pg_image'], item['name'], item['x'], item['y'], item['size'], win)
-        my_ships.append(ship)
-        # ship.draw_ships_list()"""
 
     def check_update_static_ship_list(ship):
         exists = False
@@ -56,19 +52,16 @@ def main():
                 static_ship_list[i] = obj_
                 exists = True
                 break
-
         if not exists:
             static_ship_list.append(obj_)
-
         return exists
-    
+
     def update_alpha(num, image, x, y):
         image = image.convert_alpha()
         temp = pygame.Surface((image.get_width(), image.get_height())).convert()
         temp.blit(win, (-x, -y))
         temp.blit(image, (0, 0))
         temp.set_alpha(num)
-        print('here ', image)
         win.blit(temp, (x, y))
 
     def redraw():
@@ -93,6 +86,7 @@ def main():
 
     # List of ships inside player grid
     ships_in_grid = []
+    last_pos = ()
 
     while running:
 
@@ -107,40 +101,38 @@ def main():
                     # Get mouse position
                     pos = pygame.mouse.get_pos()
                     print('Clicked at ', pos)
-                    
-                    # Check collision with player and enemy grid grid - TODO: Improve logic
-                    # p_collided = player.collide_check(pos)
-                    # enemy.collide_check(pos)
 
-                    # Testing drawing boat on grid
-                    #if p_collided:
-                        #my_ships[random.randrange(5)].draw_image(p_collided[0][0], p_collided[0][1])
-                    
                     for ship in my_ships:
                         if ship.rect.collidepoint(pos):
+                            last_pos = ship.x, ship.y
                             ship.drag = True
                             break
-            
+
             if event.type == pygame.MOUSEBUTTONUP:
-                # Check if player can drop ship at pos - If no return ship to initial position                
+                # Check if player can drop ship at pos - If no return ship to initial position
                 for ship in my_ships:
-                    
+
                     if ship.drag:
+                        # 1st check collision with other shps in grid
+                        ships_collided = player.collide_check_rect(ship.rect, my_ships)
+                        if ships_collided:
+                            ship.x, ship.y = last_pos
+                            ship.drag = False
+                            print('Here - last post ' + str(last_pos) + ' init_pos ' + str(ship.init_x) + ', ' + str(ship.init_y))
+                            break
+
                         left_check_rect = player.collide_check((ship.x + ship.rect[2] / 2, ship.y))
                         if len(left_check_rect) > 0:
                             ship.x, ship.y = player.check_ship_in_bounds(left_check_rect, ship)
-                            # print('ship x drag', ship.x)
                             ship.in_grid = True
-                            check_update_static_ship_list(ship) # TODO: Fix this logic to draw fadded selected ships
+                            check_update_static_ship_list(ship)
                         else:
                             ship.x, ship.y = ship.init_x, ship.init_y
-                            # print('ship x initial', ship.x)
                             ship.in_grid = False
                             for i, s in enumerate(static_ship_list):
                                 if ship.name == s['name']:
                                     static_ship_list.remove(s)
-                            # break
-                        
+
                         ship.drag = False
 
         for ship in my_ships:
@@ -153,7 +145,7 @@ def main():
 
                 ship.draw_image(ship.x, ship.y)
                 break
-            
+
             ship.drag = False
 
         redraw()
